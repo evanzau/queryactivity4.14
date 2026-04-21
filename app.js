@@ -266,7 +266,11 @@ async function updateTeams() {
 }
 
 async function main() {
-  await seedTeams();
+  // Only seed if the collection is empty to avoid duplicates on page reload
+  const existingDocs = await getDocs(collection(db, "teams"));
+  if (existingDocs.empty) {
+    await seedTeams();
+  }
   await runQueries();
   await updateTeams();
   await runQueries(); // optional: rerun to confirm updates
